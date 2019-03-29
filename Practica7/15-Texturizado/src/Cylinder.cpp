@@ -9,15 +9,17 @@ Cylinder::Cylinder(int slices, int stacks, float topRadius, float bottomRadius, 
 
 	vertexArray.resize((slices + 1) * (stacks + 1) + 2 * (slices + 1) + 2);
 	index.resize(slices * stacks * 2 * 3 + 2 * slices * 3);
-
+	// CAHNGES
 	for (int i = 0; i <= stacks; i++) {
 		float y = -0.5f * height + i * stackHeight;
 		float r = bottomRadius + i * radiusStep;
 		float dTheta = float(2.0f * M_PI) / slices;
+		float V = i / (float) stacks; // Para las diviciones V en y
 		for (int j = 0; j <= slices; j++) {
+			float U = j / (float) slices; // Para las divisiones U en X
 			float c = cos(j * dTheta);
 			float s = sin(j * dTheta);
-			vertexArray[count++] = Vertex(glm::vec3(r * c, y, r * s), glm::vec3(), glm::vec2(), glm::vec3(r * c, y, r * s));
+			vertexArray[count++] = Vertex(glm::vec3(r * c, y, r * s), glm::vec3(), glm::vec2(U, V), glm::vec3(r * c, y, r * s)); // se asignan en vec2
 		}
 	}
 
@@ -28,18 +30,22 @@ Cylinder::Cylinder(int slices, int stacks, float topRadius, float bottomRadius, 
 	for (int i = slices; i >= 0; i--) {
 		float x = cos(i * dTheta);
 		float z = sin(i * dTheta);
-		vertexArray[count++] = Vertex(glm::vec3(topRadius * x, y, topRadius * z), glm::vec3(), glm::vec2(), glm::vec3(0, 0, z));
+		float U = (x / 2.0f) + 0.5f; // Se calculan las divisiones
+		float V = (z / 2.0f) + 0.5f;
+		vertexArray[count++] = Vertex(glm::vec3(topRadius * x, y, topRadius * z), glm::vec3(), glm::vec2(U,V), glm::vec3(0, 0, z));// Se asignan U y V
 	}
-	vertexArray[count++] = Vertex(glm::vec3(0, y, 0), glm::vec3(), glm::vec2(), glm::vec3(0, y, 0));
+	vertexArray[count++] = Vertex(glm::vec3(0, y, 0), glm::vec3(), glm::vec2(0.5f, 0.5f), glm::vec3(0, y, 0)); // pivote para el centro de la tapa top
 	//bottom cap
 	y = -y;
 
 	for (int i = 0; i <= slices; i++) {
 		float x = cos(i * dTheta);
 		float z = sin(i * dTheta);
-		vertexArray[count++] = Vertex(glm::vec3(bottomRadius * x, y, bottomRadius * z), glm::vec3(), glm::vec2(), glm::vec3(0, 0, z));
+		float U = (x / 2.0f) + 0.5f;// Se calculan las divisiones
+		float V = (z / 2.0f) + 0.5f;
+		vertexArray[count++] = Vertex(glm::vec3(bottomRadius * x, y, bottomRadius * z), glm::vec3(), glm::vec2(U, V), glm::vec3(0, 0, z));// Se asignan U y V
 	}
-	vertexArray[count++] = Vertex(glm::vec3(0, y, 0), glm::vec3(), glm::vec2(), glm::vec3(0, y, 0));
+	vertexArray[count++] = Vertex(glm::vec3(0, y, 0), glm::vec3(), glm::vec2(0.5f, 0.5f), glm::vec3(0, y, 0)); // pivote para el centro de la tapa bottom
 
 	//fill indices array
 	int ringVertexCount = slices + 1;
