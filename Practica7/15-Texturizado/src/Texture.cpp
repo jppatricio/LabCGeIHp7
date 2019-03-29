@@ -22,7 +22,7 @@ Texture::~Texture() {
 	glDeleteTextures(1, &m_textureObj);
 }
 
-FIBITMAP* Texture::loadImage() {
+FIBITMAP* Texture::loadImage(bool flipImg) { // Se debe cambiar este "bool flipImg" en Texture.h donde igualemte se asigna un valor default
 	const char* filename = m_fileName.c_str();
 
 	// Determina el formato de la imagen
@@ -52,7 +52,10 @@ FIBITMAP* Texture::loadImage() {
 	}
 	// Si es valida la imagen y puede ser leeido, se carga la imagen en un bitap
 	FIBITMAP* bitmap = FreeImage_Load(format, filename);
-	FreeImage_FlipVertical(bitmap);
+	// ESTO ES PARA VOLTEAR LA IMAGEN EN VERTICAL -> FreeImage_FlipVertical(bitmap);
+	if (flipImg) {
+		FreeImage_FlipVertical(bitmap);
+	}
 
 	// Obtiene el numero de bits por pixel de la imagen
 	int bitsPerPixel = FreeImage_GetBPP(bitmap);
