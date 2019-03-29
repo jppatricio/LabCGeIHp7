@@ -338,6 +338,7 @@ void applicationLoop() {
 		cylinder.setViewMatrix(view);
 		cylinder.setPosition(glm::vec3(-2.0, 0.0, -3.0));
 		cylinder.render(0, cylinder.getSlices() * cylinder.getStacks() * 2 * 3); // (SIN TAPAS) -- 2 por que son 2 alturas y cada indice son 3 veces
+		glBindTexture(GL_TEXTURE_2D, textureID1);
 		cylinder.render(cylinder.getSlices() * cylinder.getStacks() * 2 * 3, cylinder.getSlices() * 3); // Tapa TOP
 		cylinder.render(cylinder.getSlices() * cylinder.getStacks() * 2 * 3 + cylinder.getSlices() * 3, cylinder.getSlices() * 3); // Tapa BOTTOM
 		//--
