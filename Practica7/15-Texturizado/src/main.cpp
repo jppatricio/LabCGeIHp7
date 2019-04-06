@@ -29,7 +29,7 @@ std::shared_ptr<FirstPersonCamera> camera(new FirstPersonCamera());
 
 Sphere sphere(20, 20);
 Sphere sphere2(20, 20);
-Cylinder cylinder(20, 20, 0.5, 0.5);
+Cylinder cylinder(20, 20, 0.5, 0.5, 2);
 Cylinder cylinder2(20, 20, 0.5, 0.5);
 Box box;
 
@@ -38,6 +38,9 @@ Shader shader;
 Shader shaderTexture;
 
 GLuint textureID1, textureID2; // Se agrega el id 2
+
+GLuint textureIDBody, textureIDTop, textureIDBottom; // para body, top y bottom de la lata qwe
+GLuint textureIDCube;
 
 int screenWidth;
 int screenHeight;
@@ -215,9 +218,152 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		std::cout << "Failed to load texture" << std::endl;
 	texture2.freeImage(bitmap2);
 
+	////------------------------------------------------
+	// PARA LA TEXTURA BODY
+	Texture texture3("../../Textures/body.png");
+	FIBITMAP* bitmap3 = texture3.loadImage(false);
+	unsigned char * data3 = texture3.convertToData(bitmap3, imageWidth, imageHeight);
+	// Se genera la textura y se le asigna su apuntador
+	glGenTextures(1, &textureIDBody);
+	// Se enlaza el tipo de textura al ID
+	glBindTexture(GL_TEXTURE_2D, textureIDBody);
+	// set the texture wrapping parameters
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//// set texture filtering parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	if (data3) {
+		glTexImage2D(
+			GL_TEXTURE_2D, //Tipo de textura 
+			0,// MIPMAPS -> no creamos los niveles (openGl los creará con glGenerateMipmap)
+			GL_RGBA,// Formato interno del Buffer
+			imageWidth,
+			imageHeight,
+			0,// Borde de la imágen
+			GL_BGRA,// Formato de la librería
+			GL_UNSIGNED_BYTE,// tipo de dato
+			data3//Datos de la imágen
+		);
+		glGenerateMipmap(GL_TEXTURE_2D); // OPENGL generará los MIPMAPS
+	}
+	else
+		std::cout << "Failed to load texture" << std::endl;
+	texture3.freeImage(bitmap3);
+
+	////------------------------------------------------
+	// PARA LA TEXTURA TOP CAP
+	Texture texture4("../../Textures/topCap.png");
+	FIBITMAP* bitmap4 = texture4.loadImage(false);
+	unsigned char * data4 = texture4.convertToData(bitmap4, imageWidth, imageHeight);
+	// Se genera la textura y se le asigna su apuntador
+	glGenTextures(1, &textureIDTop);
+	// Se enlaza el tipo de textura al ID
+	glBindTexture(GL_TEXTURE_2D, textureIDTop);
+	// set the texture wrapping parameters
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//// set texture filtering parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	if (data4) {
+		glTexImage2D(
+			GL_TEXTURE_2D, //Tipo de textura 
+			0,// MIPMAPS -> no creamos los niveles (openGl los creará con glGenerateMipmap)
+			GL_RGBA,// Formato interno del Buffer
+			imageWidth,
+			imageHeight,
+			0,// Borde de la imágen
+			GL_BGRA,// Formato de la librería
+			GL_UNSIGNED_BYTE,// tipo de dato
+			data4//Datos de la imágen
+		);
+		glGenerateMipmap(GL_TEXTURE_2D); // OPENGL generará los MIPMAPS
+	}
+	else
+		std::cout << "Failed to load texture" << std::endl;
+	texture4.freeImage(bitmap4);
+
 	//------------------------------------------------
+	// PARA LA TEXTURA BOTTOM CAP
+	Texture texture5("../../Textures/bottomCap.png");
+	FIBITMAP* bitmap5 = texture5.loadImage(false);
+	unsigned char * data5 = texture5.convertToData(bitmap5, imageWidth, imageHeight);
+	// Se genera la textura y se le asigna su apuntador
+	glGenTextures(1, &textureIDBottom);
+	// Se enlaza el tipo de textura al ID
+	glBindTexture(GL_TEXTURE_2D, textureIDBottom);
+	// set the texture wrapping parameters
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//// set texture filtering parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+	if (data5) {
+		glTexImage2D(
+			GL_TEXTURE_2D, //Tipo de textura 
+			0,// MIPMAPS -> no creamos los niveles (openGl los creará con glGenerateMipmap)
+			GL_RGBA,// Formato interno del Buffer
+			imageWidth,
+			imageHeight,
+			0,// Borde de la imágen
+			GL_BGRA,// Formato de la librería
+			GL_UNSIGNED_BYTE,// tipo de dato
+			data5//Datos de la imágen
+		);
+		glGenerateMipmap(GL_TEXTURE_2D); // OPENGL generará los MIPMAPS
+	}
+	else
+		std::cout << "Failed to load texture" << std::endl;
+	texture5.freeImage(bitmap5);
 
+	//------------------------------------------------
+	//CUBE
+
+	Texture texture6("../../Textures/cube.png");
+	FIBITMAP* bitmap6 = texture6.loadImage(false);
+	unsigned char * data6 = texture6.convertToData(bitmap6, imageWidth, imageHeight);
+	// Se genera la textura y se le asigna su apuntador
+	glGenTextures(1, &textureIDCube);
+	// Se enlaza el tipo de textura al ID: textureID1 (2D)
+	glBindTexture(GL_TEXTURE_2D, textureIDCube);
+	// set the texture wrapping parameters
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//// set texture filtering parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	if (data6) {
+		glTexImage2D(
+			GL_TEXTURE_2D, //Tipo de textura 
+			0,// MIPMAPS -> no creamos los niveles (openGl los creará con glGenerateMipmap)
+			GL_RGBA,// Formato interno del Buffer
+			imageWidth,
+			imageHeight,
+			0,// Borde de la imágen
+			GL_BGRA,// Formato de la librería
+			GL_UNSIGNED_BYTE,// tipo de dato
+			data6//Datos de la imágen
+		);
+		glGenerateMipmap(GL_TEXTURE_2D); // OPENGL generará los MIPMAPS
+	}
+	else
+		std::cout << "Failed to load texture" << std::endl;
+	texture6.freeImage(bitmap6);
+
+	////------------------------------------------------
 }
 
 void destroyWindow() {
@@ -324,7 +470,7 @@ void applicationLoop() {
 		//PARA EL CUBO
 		//Descomentar
 		//Enlazamiento de la textura a utilizar
-		glBindTexture(GL_TEXTURE_2D, textureID2);
+		glBindTexture(GL_TEXTURE_2D, textureIDCube);
 
 
 		box.setProjectionMatrix(projection);
@@ -334,12 +480,15 @@ void applicationLoop() {
 		//-----------
 
 		//Cilindro
+
+		glBindTexture(GL_TEXTURE_2D, textureIDBody);// para el cuerpo de la lata
 		cylinder.setProjectionMatrix(projection);
 		cylinder.setViewMatrix(view);
 		cylinder.setPosition(glm::vec3(-2.0, 0.0, -3.0));
 		cylinder.render(0, cylinder.getSlices() * cylinder.getStacks() * 2 * 3); // (SIN TAPAS) -- 2 por que son 2 alturas y cada indice son 3 veces
-		glBindTexture(GL_TEXTURE_2D, textureID1);
+		glBindTexture(GL_TEXTURE_2D, textureIDTop);// top
 		cylinder.render(cylinder.getSlices() * cylinder.getStacks() * 2 * 3, cylinder.getSlices() * 3); // Tapa TOP
+		glBindTexture(GL_TEXTURE_2D, textureIDBottom); //bottom
 		cylinder.render(cylinder.getSlices() * cylinder.getStacks() * 2 * 3 + cylinder.getSlices() * 3, cylinder.getSlices() * 3); // Tapa BOTTOM
 		//--
 
